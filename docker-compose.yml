@@ -1,0 +1,15 @@
+version: '1'
+
+services:
+  postgres:
+    container_name: postgres-db
+    image: postgres:14
+    environment:
+      - POSTGRES_DB=mi_db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=123456
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432  
+    restart: always  
