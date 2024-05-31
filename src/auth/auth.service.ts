@@ -2,7 +2,7 @@ import { BadRequestException, Inject, Injectable, InternalServerErrorException, 
 import { CreateUserDto, UserResponseDto } from './dto/create-user.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 
-import { User } from './entities/user.entity';
+import { Usuario } from './entities/user.entity';
 
 import * as bcryptjs from 'bcryptjs';
 import { plainToInstance } from 'class-transformer';
@@ -12,79 +12,94 @@ import { JwtPayload } from './Interfaces/jwt.payload.interface';
 import { Client } from 'pg';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { error } from 'console';
 
 @Injectable()
 export class AuthService {
 
   constructor(
-    @InjectRepository(User)
-    private userRepo: Repository<User>,
+    @InjectRepository(Usuario)
+    private userRepo: Repository<Usuario>,
     private jwtService: JwtService
   ) { }
 
-  /*async create(createAuthDto: CreateUserDto): Promise<UserResponseDto> {
-    try {
-      const { password, ...datosUsuario } = createAuthDto;
-      const nuevo = new this.userRepo({
-        password: bcryptjs.hashSync(password, 10),
-        ...datosUsuario
-      });
-      await nuevo.save();
-      return plainToInstance(UserResponseDto, nuevo.toObject());
+  async findAll() {
+    return await this.userRepo.find();
+  }
 
+  async create(data: CreateUserDto): Promise<UserResponseDto> {
+    try {
+      const { password, ...datosUsuario } = data;
+      const newUser = this.userRepo.create(datosUsuario);
+      newUser.password = bcryptjs.hashSync(password, 10);
+      await this.userRepo.save(newUser);
+      return plainToInstance(UserResponseDto, newUser);
     } catch (error) {
-      if (error.code == 11000) {
-        throw new BadRequestException(`${createAuthDto.email} ya existe`)
-      }
+      console.log('Error al crear usuario', error);
       throw new InternalServerErrorException('Error al crear usuario');
     }
   }
 
+  async update(id: number, updateAuthDto: UpdateAuthDto) {
+    const oldUser = await this.userRepo.findOneBy({ id });
+    this.userRepo.merge(oldUser, updateAuthDto);
+    return this.userRepo.save(oldUser);
+  }
 
-  async login(loginDto: loginDto) {
-    const { email, password } = loginDto;
-    const user = await this.userRepo.findOne({ email: email });
-    if (!user) {
-      throw new UnauthorizedException('Credenciales invalidas : email')
+  async remove(id: number) {
+    try {
+      const user = await this.userRepo.findOneBy({ id });
+      if (user)
+        return this.userRepo.delete(id);
+      else
+        throw error(`No existe el usuario con id: ${id}`)
+    } catch (error) {
+      console.log('Error al eliminar usuario', error);
+      throw new InternalServerErrorException('Error al eliminar usuario');
     }
+  }
 
-    if (!bcryptjs.compareSync(password, user.password)) {
-      throw new UnauthorizedException('Credenciales invalidas : password')
+  /*
+    async login(loginDto: loginDto) {
+      const { email, password } = loginDto;
+      const user = await this.userRepo.findOne({ email: email });
+      if (!user) {
+        throw new UnauthorizedException('Credenciales invalidas : email')
+      }
+  
+      if (!bcryptjs.compareSync(password, user.password)) {
+        throw new UnauthorizedException('Credenciales invalidas : password')
+      }
+  
+      const { password: _renombrando, ...data } = user.toJSON();
+      return {
+        user: data,
+        token: this.getToken({ id: user.id })
+      }
+  
     }
-
-    const { password: _renombrando, ...data } = user.toJSON();
-    return {
-      user: data,
-      token: this.getToken({ id: user.id })
+  
+    async findUserById(id: string) {
+      const user = await this.userRepo.findById(id);
+      const { password, ...resto } = user.toJSON();
+      return resto;
     }
-
-  }
-
-  async findUserById(id: string) {
-    const user = await this.userRepo.findById(id);
-    const { password, ...resto } = user.toJSON();
-    return resto;
-  }*/
-
-  getToken(payload: JwtPayload) {
-    console.log('getToken:::', payload);
-    const token = this.jwtService.sign(payload);
-    return token
-  }
-
-  findAll(): Promise<User[]> {
-    return this.userRepo.find();
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
-  }
+  
+    getToken(payload: JwtPayload) {
+      console.log('getToken:::', payload);
+      const token = this.jwtService.sign(payload);
+      return token
+    }
+  
+   
+  
+    findOne(id: number) {
+      //const usuario = this.userRepo.findOne(id);
+      return `This action returns a #${id} auth`;
+    }
+  
+   
+  
+   
+    */
 }

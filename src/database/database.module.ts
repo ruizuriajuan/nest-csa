@@ -19,7 +19,8 @@ import { DataSource } from 'typeorm';
                         username: user,
                         password,
                         database,
-                        synchronize: true,
+                        synchronize: false,
+                        entities: [__dirname + '/../**/*.entity.js'] 
                     });
                     await dataSource.initialize(); // initialize the data source
                     console.log('Database connected successfully');

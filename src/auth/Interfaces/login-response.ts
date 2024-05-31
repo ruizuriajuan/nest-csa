@@ -1,6 +1,6 @@
-import { User } from "../entities/user.entity";
+import { Usuario } from "../entities/user.entity";
 
 export interface LoginResponse {
-    user: User;
+    user: Usuario;
     token: string
 }
