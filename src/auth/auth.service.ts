@@ -59,7 +59,7 @@ export class AuthService {
     }
   }
 
-  /*
+
     async login(loginDto: loginDto) {
       const { email, password } = loginDto;
       const user = await this.userRepo.findOne({ email: email });
@@ -86,20 +86,16 @@ export class AuthService {
     }
   
     getToken(payload: JwtPayload) {
-      console.log('getToken:::', payload);
       const token = this.jwtService.sign(payload);
       return token
     }
   
    
   
-    findOne(id: number) {
-      //const usuario = this.userRepo.findOne(id);
-      return `This action returns a #${id} auth`;
+    async findOne(id: number) {
+      const user = await this.userRepo.findOneBy({ id });
+      return user;
     }
   
-   
-  
-   
-    */
+    
 }
