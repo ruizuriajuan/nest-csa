@@ -30,22 +30,17 @@ export class AuthController {
   remove(@Param('id') id: number) {
     return this.authService.remove(id);
   }
-
-
-  /*
-  
   
   @Post('login')
   login(@Body() loginDto: loginDto) {
     return this.authService.login(loginDto);
   }
   
-   
   
   @UseGuards(AuthGuard)
   @Get('check-token')
   checkToken(@Request() req: Request) : LoginResponse {
-    const user = req['user'] as User;
+    const user = req['user'] as Usuario;
     return{
       user,
       token : this.authService.getToken({id:user.id})
@@ -57,7 +52,5 @@ export class AuthController {
     return this.authService.findOne(+id);
   }
   
-  */
-
 
 }

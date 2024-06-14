@@ -59,43 +59,42 @@ export class AuthService {
     }
   }
 
+  async login(loginDto: loginDto) {
+    const { email, password } = loginDto;
+    const user = await this.userRepo.findOneBy({ email: email });
+    if (!user) {
+      throw new UnauthorizedException('Credenciales invalidas : email')
+    }
 
-    async login(loginDto: loginDto) {
-      const { email, password } = loginDto;
-      const user = await this.userRepo.findOne({ email: email });
-      if (!user) {
-        throw new UnauthorizedException('Credenciales invalidas : email')
-      }
-  
-      if (!bcryptjs.compareSync(password, user.password)) {
-        throw new UnauthorizedException('Credenciales invalidas : password')
-      }
-  
-      const { password: _renombrando, ...data } = user.toJSON();
-      return {
-        user: data,
-        token: this.getToken({ id: user.id })
-      }
-  
+    if (!bcryptjs.compareSync(password, user.password)) {
+      throw new UnauthorizedException('Credenciales invalidas : password')
     }
-  
-    async findUserById(id: string) {
-      const user = await this.userRepo.findById(id);
-      const { password, ...resto } = user.toJSON();
-      return resto;
+
+    const { password: _renombrando, ...data } = user;
+    return {
+      user: data,
+      token: this.getToken({ id: user.id })
     }
-  
-    getToken(payload: JwtPayload) {
-      const token = this.jwtService.sign(payload);
-      return token
-    }
-  
-   
-  
-    async findOne(id: number) {
-      const user = await this.userRepo.findOneBy({ id });
-      return user;
-    }
-  
-    
+
+  }
+
+  async findUserById(id: number) {
+    const user = await this.userRepo.findOneBy({id});
+    const { password, ...resto } = user;
+    return resto;
+  }
+
+  getToken(payload: JwtPayload) {
+    const token = this.jwtService.sign(payload);
+    return token
+  }
+
+
+
+  async findOne(id: number) {
+    const user = await this.userRepo.findOneBy({ id });
+    return user;
+  }
+
+
 }

@@ -3,7 +3,7 @@ import { registerAs } from '@nestjs/config';
 export default registerAs('database', () => {
   return {
     database: {
-        database: process.env.DATABASE_NAME,
+      database: process.env.DATABASE_NAME,
       port: process.env.DATABASE_PORT,
     },
     postgres: { 

@@ -1,7 +1,9 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { General } from './general.entity';
+import { Exclude } from 'class-transformer';
 
-@Entity()
-export class Usuario {
+@Entity({name: 'usuarios'})
+export class Usuario extends General{
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -11,11 +13,12 @@ export class Usuario {
     @Column({type:'text' })
     name: string;
 
+    @Exclude()
     @Column({type:'text'})
     password: string;
 
     @Column({type:'bool'})
-    active: boolean;
+    activo: boolean;
 
    
 }
