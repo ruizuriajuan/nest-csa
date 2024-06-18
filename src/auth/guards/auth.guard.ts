@@ -13,26 +13,26 @@ export class AuthGuard implements CanActivate {
   ) { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
-    if (!token) {
+
+    if ( !token ) {
       throw new UnauthorizedException('No hay un bearer token');
     }
+
     try {
-      const payload = await this.jwtService.verifyAsync<JwtPayload>(
-        token,
-        { secret: process.env.JWT_SEED }
-      );
+      const payload = await this.jwtService.verifyAsync<JwtPayload>( token, { secret: process.env.JWT_SEED } );
       console.log({ payload });
-      /*const user = await this.authSrv.findUserById(payload.id);
+      
+      const user = await this.authSrv.findUserById(payload.id);
       console.log({user});
       if(!user) throw new UnauthorizedException('El usuario no existe');
-      if(!user.isActive) throw new UnauthorizedException('El usuario no activo');
+      if(!user.active) throw new UnauthorizedException('El usuario no activo');
       request['user'] = user;
-      */
+      
     } catch {
-      console.log('Error ');
-      throw new UnauthorizedException();
+       throw new UnauthorizedException();
     }
 
     return Promise.resolve(true);

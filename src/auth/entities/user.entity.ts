@@ -10,17 +10,16 @@ export class Usuario extends General{
     @Column({ nullable: false, type:'text', unique:true })
     email: string;
 
-    @Column({type:'text' })
+    @Column({type:'text', nullable:true })
     name: string;
 
     @Exclude()
     @Column({type:'text'})
     password: string;
 
-    @Column({type:'bool'})
-    activo: boolean;
-
-   
+    @Column({type:'bool', default:true})
+    active: boolean;
+  
 }
 
 

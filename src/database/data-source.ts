@@ -1,13 +1,27 @@
-import * as dotenv from 'dotenv'
-import { DataSource } from "typeorm";
+import * as dotenv from 'dotenv';
+import { resolve } from "path";
+import { DataSource, DataSourceOptions } from "typeorm";
 
+dotenv.config();
+//console.log('envvv',process.env.POSTGRES_URL);
 
-export const AppDataSource = new DataSource({
+export const dataSourcePostgres: DataSourceOptions = {
     type: 'postgres',
     url: process.env.POSTGRES_URL,
     synchronize:false,
     logging:false,
-    entities: [__dirname + '/../**/*.entity.js'],
+    entities: ['src/**/*.entity.ts'],
     migrations: ['src/database/migrations/*.ts'] ,
     migrationsTableName:'migrations',
-})
+}
+
+const dataSource = new DataSource(dataSourcePostgres)
+export default dataSource;
+
+dataSource.initialize()
+    .then(() => {
+        console.log("Data Source has been initialized!")
+    })
+    .catch((err) => {
+        console.error("Error during Data Source initialization", err)
+    })

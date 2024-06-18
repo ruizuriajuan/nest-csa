@@ -11,10 +11,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   imports: [
     ConfigModule.forRoot(),
     TypeOrmModule.forFeature([Usuario]),
+    
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SEED,
-      signOptions: { expiresIn: '10h' },
+      signOptions: { expiresIn: '6h' },
     }),
   ],
   controllers: [AuthController],

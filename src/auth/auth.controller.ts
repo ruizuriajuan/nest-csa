@@ -16,7 +16,7 @@ export class AuthController {
     return this.authService.findAll();
   }
 
-  @Post()
+  @Post('crear')
   create(@Body() createAuthDto: CreateUserDto) {
     return this.authService.create(createAuthDto);
   }
