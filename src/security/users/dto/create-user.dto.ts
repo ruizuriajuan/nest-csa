@@ -6,7 +6,7 @@ export class CreateUserDto {
     email: string;
 
     @IsString()
-    name: string;
+    nombre: string;
 
     @MinLength(6)
     password: string;
@@ -15,7 +15,7 @@ export class CreateUserDto {
 
 export class UserResponseDto {
     @Expose()
-    name: string;
+    nombre: string;
   
     @Expose()
     email: string;
