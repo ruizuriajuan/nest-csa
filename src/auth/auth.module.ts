@@ -1,17 +1,16 @@
-import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-
-import { Usuario  } from './entities/user.entity';
-import { JwtModule } from '@nestjs/jwt';
+import { AuthService } from './auth.service';
 import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { JwtModule } from '@nestjs/jwt';
+import { Module } from '@nestjs/common';
+import { UsersModule } from 'src/security/users/users.module';
+
+
 
 @Module({
   imports: [
+    UsersModule,
     ConfigModule.forRoot(),
-    TypeOrmModule.forFeature([Usuario]),
-    
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SEED,

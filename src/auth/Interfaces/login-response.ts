@@ -1,4 +1,7 @@
-import { Usuario } from "../entities/user.entity";
+import { Usuario } from "src/security/users/entities/user.entity";
+
+
+
 
 export interface LoginResponse {
     user: Usuario;
