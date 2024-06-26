@@ -12,11 +12,9 @@ export class SistemaDto {
   @IsString()
   url: string;
 
-/*  @IsArray()
-  @IsNotEmpty()
-  //@ApiPropert()
-  readonly menus: number[]
-  */
+  @IsArray()
+  menuList: number[];
+
 
 }
 

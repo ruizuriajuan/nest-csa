@@ -1,10 +1,9 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { plainToInstance } from 'class-transformer';
 import { Vista } from '../entities/vista.entity';
-import { VistaUpdateDto } from '../dto/vistaupdate.dto';
-import { VistaDto, VistaResponseDto } from '../dto/vista.dto';
+import { VistaDto, VistaResponseDto, VistaUpdateDto } from '../dto/vista.dto';
 
 @Injectable()
 export class VistaService {
@@ -24,16 +23,20 @@ export class VistaService {
     async findById(id: number) {
         const vista = await this.repository.findOneBy({ id });
         if (!vista) {
-            throw new NotFoundException(`No existe el Vista: ${id}`)
+            throw new NotFoundException(`No existe la pagina: ${id}`)
         }
         return vista;
+    }
+
+    async findByIds(ids: number[]) {
+        return await this.repository.findBy({ id: In(ids) });
     }
 
     async create(data: VistaDto): Promise<VistaResponseDto> {
         try {
             const existe = await this.findByName(data.nombre);
             if (existe) {
-                throw new BadRequestException(`Vista duplicada: ${(existe).nombre}`);
+                throw new BadRequestException(`pagina duplicada: ${(existe).nombre}`);
             }
             const newVista = await this.repository.create(data);
             await this.repository.save(newVista);

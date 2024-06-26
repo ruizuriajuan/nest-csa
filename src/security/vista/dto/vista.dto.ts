@@ -1,3 +1,4 @@
+import { PartialType } from "@nestjs/mapped-types";
 import { Exclude, Expose } from "class-transformer";
 import { IsEmail, IsInt, IsString, MaxLength, MinLength } from "class-validator";
 
@@ -26,3 +27,5 @@ export class VistaResponseDto {
       Object.assign(this, partial);
     }
   }
+
+  export class VistaUpdateDto extends PartialType(VistaDto) {}

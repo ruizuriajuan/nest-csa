@@ -1,12 +1,17 @@
+import { PartialType } from "@nestjs/mapped-types";
 import { Exclude, Expose } from "class-transformer";
-import { IsString } from "class-validator";
+import { IsArray, IsString } from "class-validator";
 
 export class MenuDto {
     @IsString()
     nombre: string;
 
     @IsString()
-    descripcion: string;  
+    descripcion: string;
+    
+    @IsArray()
+    subMenuList: number[];
+
 }
 
 export class MenuResponseDto {
@@ -20,3 +25,5 @@ export class MenuResponseDto {
       Object.assign(this, partial);
     }
   }
+
+  export class MenuUpdateDto extends PartialType(MenuDto) {}

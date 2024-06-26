@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { SubMenuDto } from '../dto/submenu.dto';
 import { SubMenuUpdateDto } from '../dto/submenuupdate.dto';
 import { SubMenuService } from '../services/submenu.service';
@@ -11,6 +11,11 @@ export class SubMenuController {
     @Get()
     findAll() {
         return this.service.findAll();
+    }
+
+    @Get(':id')
+    findVistas(@Param('id') id: number) {
+        return this.service.findVistas(id);
     }
 
     @Post('crear')
@@ -27,5 +32,13 @@ export class SubMenuController {
     remove(@Param('id') id: number) {
         return this.service.remove(id);
     }
+
+    @Delete(':id/vista/:idVista')
+    removeVista(
+        @Param('id') id: number,
+        @Param('idVista', ParseIntPipe) idVista: number) {
+        return this.service.removeVista(id, idVista);
+    }
+
 
 }

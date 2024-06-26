@@ -3,35 +3,35 @@ import { Vista } from "../../vista/entities/vista.entity";
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 
-@Entity({name:'submenus'})
+@Entity({ name: 'submenus' })
 export class SubMenu {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({type:'text', unique:true, nullable: false, })
+    @Column({ type: 'text' })
     nombre: string;
 
-    @Column({type:'text' })
-    sigla : string;
-    
-    @Column({type:'bool', default:true})
+    @Column({ type: 'text' })
+    sigla: string;
+
+    @Column({ type: 'bool', default: true })
     activo: boolean;
 
-    @Column({type:'text', name:'base_url' })
-    baseUrl : string;
+    @Column({ type: 'text', name: 'base_url', nullable: true })
+    baseUrl: string;
 
-    @Column({type:'int' })
-    orden : number;
+    @Column({ type: 'int'})
+    orden: number;
 
     @CreateDateColumn({
-        name:'fecha_creacion',
+        name: 'fecha_creacion',
         type: 'timestamptz',
         default: () => 'CURRENT_TIMESTAMP',
     })
     fechaCreacion: Date;
 
     @UpdateDateColumn({
-        name:'fecha_actualizacion',
+        name: 'fecha_actualizacion',
         type: 'timestamptz',
         default: () => 'CURRENT_TIMESTAMP',
     })

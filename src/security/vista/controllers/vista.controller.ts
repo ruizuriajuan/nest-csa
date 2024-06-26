@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { VistaService } from '../services/vista.service';
-import { VistaUpdateDto } from '../dto/vistaupdate.dto';
-import { VistaDto } from '../dto/vista.dto';
+import { VistaDto, VistaUpdateDto } from '../dto/vista.dto';
 
 @Controller('vista')
 export class VistaController {

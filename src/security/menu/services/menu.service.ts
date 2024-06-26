@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { plainToInstance } from 'class-transformer';
 import { Menu } from '../entities/menu.entity';
-import { MenuDto, MenuResponseDto } from '../dto/menu.dto';
-import { MenuUpdateDto } from '../dto/menuupdate.dto';
+import { MenuDto, MenuResponseDto, MenuUpdateDto } from '../dto/menu.dto';
+import { SubMenuService } from 'src/security/sub-menu/services/submenu.service';
 
 
 
@@ -12,7 +12,8 @@ import { MenuUpdateDto } from '../dto/menuupdate.dto';
 export class MenuService {
     constructor(
         @InjectRepository(Menu)
-        private repository: Repository<Menu>
+        private repository: Repository<Menu>,
+        private readonly submenuService: SubMenuService
     ) { }
 
     async findAll() {
@@ -31,13 +32,29 @@ export class MenuService {
         return menu;
     }
 
+    async findByIds(ids: number[]) {
+        return await this.repository.findBy({ id: In(ids) });
+    }
+
+    async findSubMenus(id: number) {
+        const menu = await this.repository.findOne({
+            where: { id },
+            relations: ['submenus']
+        });
+        if (!menu) {
+            throw new NotFoundException(`No existe el menu: ${id}`)
+        }
+        return menu;
+    }
+
     async create(data: MenuDto): Promise<MenuResponseDto> {
         try {
-            const existe = await this.findByName(data.nombre);
-            if (existe) {
-                throw new BadRequestException(`Menu duplicado: ${(existe).nombre}`);
-            }
             const newMenu = await this.repository.create(data);
+            const existe = await this.findByName(data.nombre);
+            if (data.subMenuList) {
+                const subMenuIds = await this.submenuService.findByIds(data.subMenuList);
+                newMenu.submenus = subMenuIds;
+            }
             await this.repository.save(newMenu);
             return plainToInstance(MenuResponseDto, newMenu);
         } catch (error) {
@@ -45,9 +62,16 @@ export class MenuService {
         }
     }
 
-    async update(id: number, Menu: MenuUpdateDto) {
-        const oldMenu = await this.findById(id);
-        this.repository.merge(oldMenu, Menu);
+    async update(id: number, menu: MenuUpdateDto) {
+        const oldMenu = await this.findSubMenus(id);
+        if(menu.subMenuList){
+            let newSubMenus = menu.subMenuList;
+            let oldSubmenus = oldMenu.submenus.map(sb => sb.id);
+            let setSubMenuUnicos =  new Set(oldSubmenus);
+            newSubMenus.forEach( id => setSubMenuUnicos.add(id));
+            oldMenu.submenus = await this.submenuService.findByIds([...setSubMenuUnicos])
+        }
+        this.repository.merge(oldMenu, menu);
         const menuMerged = await this.repository.save(oldMenu);
         return menuMerged;
     }
@@ -56,6 +80,18 @@ export class MenuService {
         try {
             const menu = await this.findById(id);
             return this.repository.delete(id);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async removeSubMenu(id: number, idsubMenu: number) {
+        try {
+            const menu = await this.findSubMenus(id);
+            menu.submenus = menu.submenus.filter(
+                (sb) => sb.id !== idsubMenu
+            )
+            return this.repository.save(menu)
         } catch (error) {
             throw error;
         }

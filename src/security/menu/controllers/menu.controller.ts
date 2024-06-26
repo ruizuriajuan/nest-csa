@@ -1,6 +1,5 @@
-import { Get, Post, Body, Patch, Param, Delete, Controller } from '@nestjs/common';
-import { MenuDto } from '../dto/menu.dto';
-import { MenuUpdateDto } from '../dto/menuupdate.dto';
+import { Get, Post, Body, Patch, Param, Delete, Controller, ParseIntPipe } from '@nestjs/common';
+import { MenuDto, MenuUpdateDto } from '../dto/menu.dto';
 import { MenuService } from '../services/menu.service';
 
 
@@ -13,6 +12,12 @@ export class MenuControler {
     findAll() {
         return this.service.findAll();
     }
+
+    @Get(':id')
+    findSubMenus(@Param('id') id: number) {
+        return this.service.findSubMenus(id);
+    }
+
 
     @Post('crear')
     create(@Body() menu: MenuDto) {
@@ -27,6 +32,13 @@ export class MenuControler {
     @Delete(':id')
     remove(@Param('id') id: number) {
         return this.service.remove(id);
+    }
+
+    @Delete(':id/submenu/:idSubmenu')
+    removeSubmenu(
+        @Param('id') id: number,
+        @Param('idSubmenu', ParseIntPipe) idSubmenu: number) {
+        return this.service.removeSubMenu(id, idSubmenu);
     }
 
 }

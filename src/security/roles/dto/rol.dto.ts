@@ -1,5 +1,5 @@
 import { Exclude, Expose } from "class-transformer";
-import { IsEmail, IsString, MaxLength, MinLength } from "class-validator";
+import { IsArray, IsEmail, IsString, MaxLength, MinLength } from "class-validator";
 
 export class RolDto {
     @IsString()
@@ -7,6 +7,13 @@ export class RolDto {
 
     @IsString()
     descripcion: string;  
+
+    @IsArray()
+    usuarioList : number[];
+
+    @IsArray()
+    vistaList: number[];
+
 }
 
 export class RolResponseDto {

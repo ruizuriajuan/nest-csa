@@ -1,5 +1,5 @@
 import { Exclude, Expose } from "class-transformer";
-import { IsEmail, IsString, MaxLength, MinLength } from "class-validator";
+import { IsArray, IsEmail, IsString, MaxLength, MinLength } from "class-validator";
 
 export class CreateUserDto {
     @IsEmail()
@@ -10,6 +10,9 @@ export class CreateUserDto {
 
     @MinLength(6)
     password: string;
+
+    @IsArray()
+    rolList : number[];
 
 }
 

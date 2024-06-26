@@ -1,7 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { SistemaService } from '../services/sistema.service';
-import { SistemaDto } from '../dto/sistema.dto';
-import { SistemaUpdateDto } from '../dto/sistemaupdate.dto';
+import { SistemaDto, SistemaUpdateDto } from '../dto/sistema.dto';
 
 @Controller('sistema')
 export class SistemaController {
@@ -11,6 +10,11 @@ export class SistemaController {
     @Get()
     findAll() {
         return this.service.findAll();
+    }
+
+    @Get(':id')
+    findMenus(@Param('id') id: number) {
+        return this.service.findMenus(id);
     }
 
     @Post('crear')
@@ -27,5 +31,13 @@ export class SistemaController {
     remove(@Param('id') id: number) {
         return this.service.remove(id);
     }
+
+    @Delete(':id/menu/:idMenu')
+    removeMenu(
+        @Param('id') id: number,
+        @Param('idMenu', ParseIntPipe) idMenu: number) {
+        return this.service.removeMenu(id, idMenu);
+    }
+
 
 }

@@ -1,5 +1,5 @@
 import { Exclude, Expose } from "class-transformer";
-import {  IsInt, IsString, MaxLength, MinLength} from "class-validator";
+import {  IsArray, IsInt, IsNotEmpty, IsString, MaxLength, MinLength} from "class-validator";
 
 export class SubMenuDto {
     @IsString()
@@ -9,10 +9,17 @@ export class SubMenuDto {
     sigla: string;  
 
     @IsString()
-    url: string;  
+    baseUrl: string;  
 
     @IsInt()
     orden: number;
+
+    @IsArray()
+    //@IsNotEmpty()
+    //@ArrayMinSize(1) //se obliga a que tenga un elemento si es nece.
+    //@ApiProperty()
+    vistaList: number[];
+  
 }
 
 export class SubMenuResponseDto {
@@ -23,11 +30,12 @@ export class SubMenuResponseDto {
     sigla: string;
 
     @Exclude()
-    url: string;
+    baseUrl: string;
 
     @Expose()
     orden: string;
-   
+
+      
     constructor(partial: Partial<SubMenuResponseDto>) {
       Object.assign(this, partial);
     }
