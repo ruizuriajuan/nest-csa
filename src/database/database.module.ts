@@ -4,7 +4,7 @@ import { DataSource } from 'typeorm';
 
 @Global()
 @Module({
-    imports: [ ],
+    imports: [],
     providers: [
         {
             provide: DataSource, // add the datasource as a provider
@@ -20,7 +20,8 @@ import { DataSource } from 'typeorm';
                         password,
                         database,
                         synchronize: false,
-                        entities: [__dirname + '/../**/*.entity.js'] 
+                        entities: [__dirname + '/../**/*.entity.js'],
+                        ssl: true
                     });
                     await dataSource.initialize(); // initialize the data source
                     console.log('Database connected successfully');

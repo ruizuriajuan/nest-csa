@@ -8,11 +8,15 @@ dotenv.config();
 export const dataSourcePostgres: DataSourceOptions = {
     type: 'postgres',
     url: process.env.POSTGRES_URL,
-    synchronize:false,
-    logging:false,
+    synchronize: false,
+    logging: false,
     entities: ['src/**/*.entity.ts'],
-    migrations: ['src/database/migrations/*.ts'] ,
-    migrationsTableName:'migrations',
+    migrations: ['src/database/migrations/*.ts'],
+    migrationsTableName: 'migrations',
+    ssl: process.env.POSTGRES_SSL === 'true',
+    extra: {
+        ssl: process.env.POSTGRES_SSL === 'true' ? { rejectUnauthorized: false } : null
+    }
 }
 
 const dataSource = new DataSource(dataSourcePostgres)
